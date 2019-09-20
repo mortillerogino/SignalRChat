@@ -58,3 +58,8 @@ body {
 .messages-container {
     height: 500px;
 }
+
+.messages-field {
+    height: 100px;
+}
+
