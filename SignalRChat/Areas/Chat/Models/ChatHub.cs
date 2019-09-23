@@ -25,7 +25,7 @@ namespace SignalRChat.Areas.Chat.Models
             var datetime = DateTime.Now;
             var newMesage = new ChatMessage
             {
-                Username = user.UserName,
+                ChatUser = user,
                 ChatroomId = chatroomId,
                 Message = message,
                 TimeStamp = datetime
@@ -33,7 +33,7 @@ namespace SignalRChat.Areas.Chat.Models
 
             await _unitOfWork.ChatMessageRepository.InsertAsync(newMesage);
             await _unitOfWork.CommitAsync();
-            await Clients.All.SendAsync(chatroomId.ToString(), newMesage.Username, newMesage.TimeStampString, message);
+            await Clients.All.SendAsync(chatroomId.ToString(), newMesage.ChatUser.UserName, newMesage.TimeStampString, message);
         }
     }
 }

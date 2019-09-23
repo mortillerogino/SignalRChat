@@ -41,7 +41,7 @@
         <ul id="messagesContainer" class="list-group">
             @foreach (var item in Model.ChatMessages)
             {
-                <li class="list-group-item">@item.TimeStamp @item.Username: @item.Message </li>
+                <li class="list-group-item">@item.TimeStamp @item.ChatUser.UserName: @item.Message </li>
             }
         </ul>
     </div>
