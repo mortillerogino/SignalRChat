@@ -1,9 +1,10 @@
 ﻿var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+var id = $("#chatroomId").val();
 
 var sendBtn = $("#sendButton");
 sendBtn.prop("disabled", true);
 
-connection.on("ReceiveMessage", function (user, message) {
+connection.on(id, function (user, timestamp, message) {
     var li = document.createElement("li");
     li.textContent = message;
     li.setAttribute("class", "list-group-item");
@@ -18,7 +19,7 @@ connection.start().then(sendBtn.prop("disabled", false)).catch(function (err) {
 $("#sendButton").click(function () {
     let newText = $("#newMessageBox").val();
     $("#newMessageBox").val("");
-    connection.invoke("SendMessage", "Gino", newText).catch(function (err) {
+    connection.invoke("SendMessage", id, "Gino", newText).catch(function (err) {
         return console.error(err.toString());
     });
 });

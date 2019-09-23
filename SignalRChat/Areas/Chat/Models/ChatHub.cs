@@ -8,9 +8,10 @@ namespace SignalRChat.Areas.Chat.Models
 {
     public class ChatHub : Hub
     {
-        public async Task SendMessage(string user, string message)
+        public async Task SendMessage(int chatroomId, string user, string message)
         {
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+            var timestamp = DateTime.Now;
+            await Clients.All.SendAsync(chatroomId.ToString(), user, timestamp, message);
         }
     }
 }
