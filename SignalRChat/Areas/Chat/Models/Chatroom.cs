@@ -12,5 +12,6 @@ namespace SignalRChat.Areas.Chat.Models
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
+
     }
 }

@@ -16,12 +16,14 @@ namespace SignalRChat.Models
         }
 
         public DbSet<Chatroom> Chatrooms { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Chatroom>().ToTable("Chatroom");
+            modelBuilder.Entity<ChatMessage>().ToTable("ChatMessage");
         }
     }
 }
