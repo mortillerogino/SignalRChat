@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SignalRChat.Areas.Chat.Data;
 using SignalRChat.Areas.Chat.Models;
+using SignalRChat.Areas.Identity.Models;
 using SignalRChat.Models;
 
 namespace SignalRChat.Areas.Chat.Controllers
@@ -17,10 +20,12 @@ namespace SignalRChat.Areas.Chat.Controllers
     public class ChatroomsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<ChatUser> _userManager;
 
-        public ChatroomsController(IUnitOfWork unitOfWork)
+        public ChatroomsController(IUnitOfWork unitOfWork, UserManager<ChatUser> userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
         // GET: Chat/Chatrooms
@@ -43,7 +48,12 @@ namespace SignalRChat.Areas.Chat.Controllers
                 return NotFound();
             }
 
-            return View(chatroom.FirstOrDefault());
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            var dto = new ChatroomDto(chatroom.FirstOrDefault());
+            dto.SetUser(currentUser);
+
+            return View(dto);
         }
 
         // GET: Chat/Chatrooms/Create

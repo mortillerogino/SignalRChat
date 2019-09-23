@@ -1,4 +1,8 @@
-﻿@model SignalRChat.Areas.Chat.Models.Chatroom
+﻿@using Microsoft.AspNetCore.Identity
+@using SignalRChat.Areas.Identity.Models
+
+@model SignalRChat.Areas.Chat.Models.ChatroomDto
+@inject UserManager<ChatUser> UserManager
 
 @{
     ViewData["Title"] = "Details";
@@ -26,6 +30,7 @@
     <div class="row mt-5 mb-5">
         <div class="input-group mb-3">
             <input type="hidden" id="chatroomId" value="@Model.Id" />
+            <input type="hidden" id="userId" value="@Model.User.Id" />
             <input type="text" class="form-control" placeholder="Chat here" id="newMessageBox">
             <div class="input-group-append">
                 <button class="btn btn-primary" type="button" id="sendButton">Send</button>

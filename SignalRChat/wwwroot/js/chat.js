@@ -18,8 +18,9 @@ connection.start().then(sendBtn.prop("disabled", false)).catch(function (err) {
 
 $("#sendButton").click(function () {
     let newText = $("#newMessageBox").val();
-    $("#newMessageBox").val("");
-    connection.invoke("SendMessage", id, "Gino", newText).catch(function (err) {
+    $("#newMessageBox").val(""); 
+    let userId = $("#userId").val();
+    connection.invoke("SendMessage", id, userId, newText).catch(function (err) {
         return console.error(err.toString());
     });
 });

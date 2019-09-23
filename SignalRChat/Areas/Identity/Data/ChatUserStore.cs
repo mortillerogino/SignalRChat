@@ -66,7 +66,7 @@ namespace SignalRChat.Areas.Identity.Data
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 ThrowIfDisposed();
-                var applicationUser = await _unitOfWork.ChatUserRepository.GetByIdAsync(userId);
+                var applicationUser = await _unitOfWork.ChatUserRepository.GetByIdAsync(int.Parse(userId));
                 return applicationUser;
             }
             catch (Exception ex)
