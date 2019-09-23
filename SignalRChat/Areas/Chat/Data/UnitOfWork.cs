@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SignalRChat.Areas.Identity.Data;
 using SignalRChat.Models;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,34 @@ namespace SignalRChat.Areas.Chat.Data
                 }
 
                 return _chatMessageRepository;
+            }
+        }
+
+        private IChatUserRepository _chatUserRepository;
+        public IChatUserRepository ChatUserRepository
+        {
+            get
+            {
+                if (_chatUserRepository == null)
+                {
+                    _chatUserRepository = new ChatUserRepository(_dbContext);
+                }
+
+                return _chatUserRepository;
+            }
+        }
+
+        private IChatUserClaimRepository _chatUserClaimRepository;
+        public IChatUserClaimRepository ChatUserClaimRepository
+        {
+            get
+            {
+                if (_chatUserClaimRepository == null)
+                {
+                    _chatUserClaimRepository = new ChatUserClaimRepository(_dbContext);
+                }
+
+                return _chatUserClaimRepository;
             }
         }
 

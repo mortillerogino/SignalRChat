@@ -1,4 +1,5 @@
 ﻿using SignalRChat.Areas.Chat.Data;
+using SignalRChat.Areas.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace SignalRChat.Areas.Chat.Data
     {
         IChatroomRepository ChatroomRepository { get; }
         IChatMessageRepository ChatMessageRepository { get; }
+        IChatUserRepository ChatUserRepository { get; }
+        IChatUserClaimRepository ChatUserClaimRepository { get; }
 
         void Commit();
 
