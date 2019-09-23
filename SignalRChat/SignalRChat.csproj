@@ -14,9 +14,7 @@
 
 
   <ItemGroup>
-    <Folder Include="Areas\Chat\Controllers\" />
     <Folder Include="Areas\Chat\Data\" />
-    <Folder Include="Areas\Chat\Views\" />
   </ItemGroup>
 
 </Project>

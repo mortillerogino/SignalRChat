@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SignalRChat.Areas.Chat.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,13 @@ namespace SignalRChat.Models
 
         }
 
+        public DbSet<Chatroom> Chatrooms { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Chatroom>().ToTable("Chatroom");
+        }
     }
 }
