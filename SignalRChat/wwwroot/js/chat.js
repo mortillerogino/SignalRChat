@@ -6,7 +6,7 @@ sendBtn.prop("disabled", true);
 
 connection.on(id, function (user, timestamp, message) {
     var li = document.createElement("li");
-    li.textContent = message;
+    li.textContent = timestamp + " " + user + ": " + message;
     li.setAttribute("class", "list-group-item");
     var list = document.getElementById("messagesContainer");
     list.insertBefore(li, list.firtChild);

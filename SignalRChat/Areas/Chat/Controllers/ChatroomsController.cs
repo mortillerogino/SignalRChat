@@ -35,13 +35,13 @@ namespace SignalRChat.Areas.Chat.Controllers
                 return NotFound();
             }
 
-            var chatroom = await _unitOfWork.ChatroomRepository.GetByIdAsync(id);
+            var chatroom = await _unitOfWork.ChatroomRepository.GetAsync(a => a.Id == id, null, a => a.ChatMessages);
             if (chatroom == null)
             {
                 return NotFound();
             }
 
-            return View(chatroom);
+            return View(chatroom.FirstOrDefault());
         }
 
         // GET: Chat/Chatrooms/Create
@@ -146,6 +146,26 @@ namespace SignalRChat.Areas.Chat.Controllers
             await _unitOfWork.CommitAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> AddMessage(int chatroomId, string message)
+        //{
+        //    var newMessage = new ChatMessage
+        //    {
+        //        Message = message, 
+        //        ChatroomId = chatroomId
+        //    };
+
+        //    var chatroom = await _unitOfWork.ChatroomRepository.GetByIdAsync(chatroomId);
+        //    chatroom.ChatMessages.Add(newMessage);
+
+        //    await _unitOfWork.ChatMessageRepository.InsertAsync(newMessage);
+        //    _unitOfWork.ChatroomRepository.Update(chatroom);
+        //    await _unitOfWork.CommitAsync();
+
+        //    return View(chatroom);
+        //}
 
         private async Task<bool> ChatroomExists(int id)
         {

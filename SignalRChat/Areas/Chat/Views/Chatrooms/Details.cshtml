@@ -33,9 +33,13 @@
         </div>
     </div>
     <div class="row messages-container overflow-auto">
-        <ul id="messagesContainer" class="list-group"></ul>
+        <ul id="messagesContainer" class="list-group">
+            @foreach (var item in Model.ChatMessages)
+            {
+                <li class="list-group-item">@item.TimeStamp @item.Username: @item.Message </li>
+            }
+        </ul>
     </div>
-
 </div>
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/lib/signalr/dist/browser/signalr.js"></script>
