@@ -105,7 +105,7 @@ namespace SignalRChat.Areas.Identity.Data
             }
         }
 
-        public async Task<int> GetUserIdAsync(ChatUser user, CancellationToken cancellationToken)
+        public async Task<string> GetUserIdAsync(ChatUser user, CancellationToken cancellationToken)
         {
             try
             {
@@ -114,11 +114,11 @@ namespace SignalRChat.Areas.Identity.Data
                 var applicationUser = await _unitOfWork.ChatUserRepository.GetByIdAsync(user.Id);
                 if (applicationUser != null)
                 {
-                    return applicationUser.Id;
+                    return applicationUser.Id.ToString();
                 }
                 else
                 {
-                    return user.Id;
+                    return user.Id.ToString();
                 }
             }
             catch (Exception ex)
@@ -658,6 +658,7 @@ namespace SignalRChat.Areas.Identity.Data
                 throw new ObjectDisposedException(GetType().Name);
             }
         }
+
 
     }
 }
