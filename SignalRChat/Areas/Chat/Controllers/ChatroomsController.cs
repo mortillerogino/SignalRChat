@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SignalRChat.Areas.Chat.Data;
 using SignalRChat.Areas.Chat.Models;
 using SignalRChat.Models;
 
@@ -13,17 +14,17 @@ namespace SignalRChat.Areas.Chat.Controllers
     [Area("Chat")]
     public class ChatroomsController : Controller
     {
-        private readonly ChatContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ChatroomsController(ChatContext context)
+        public ChatroomsController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: Chat/Chatrooms
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Chatrooms.ToListAsync());
+            return View(await _unitOfWork.ChatroomRepository.GetAsync());
         }
 
         // GET: Chat/Chatrooms/Details/5
@@ -34,8 +35,7 @@ namespace SignalRChat.Areas.Chat.Controllers
                 return NotFound();
             }
 
-            var chatroom = await _context.Chatrooms
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var chatroom = await _unitOfWork.ChatroomRepository.GetByIdAsync(id);
             if (chatroom == null)
             {
                 return NotFound();
@@ -59,26 +59,28 @@ namespace SignalRChat.Areas.Chat.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(chatroom);
-                await _context.SaveChangesAsync();
+                await _unitOfWork.ChatroomRepository.InsertAsync(chatroom);
+                await _unitOfWork.CommitAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(chatroom);
         }
 
         // GET: Chat/Chatrooms/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null) 
             {
                 return NotFound();
             }
 
-            var chatroom = await _context.Chatrooms.FindAsync(id);
+            var chatroom = await _unitOfWork.ChatroomRepository.GetByIdAsync(id);
             if (chatroom == null)
             {
                 return NotFound();
             }
+
             return View(chatroom);
         }
 
@@ -98,12 +100,13 @@ namespace SignalRChat.Areas.Chat.Controllers
             {
                 try
                 {
-                    _context.Update(chatroom);
-                    await _context.SaveChangesAsync();
+                    _unitOfWork.ChatroomRepository.Update(chatroom);
+                    await _unitOfWork.CommitAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ChatroomExists(chatroom.Id))
+                    var chatroomExists = await ChatroomExists(id);
+                    if (!chatroomExists)
                     {
                         return NotFound();
                     }
@@ -125,8 +128,7 @@ namespace SignalRChat.Areas.Chat.Controllers
                 return NotFound();
             }
 
-            var chatroom = await _context.Chatrooms
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var chatroom = await _unitOfWork.ChatroomRepository.GetByIdAsync(id);
             if (chatroom == null)
             {
                 return NotFound();
@@ -140,15 +142,15 @@ namespace SignalRChat.Areas.Chat.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var chatroom = await _context.Chatrooms.FindAsync(id);
-            _context.Chatrooms.Remove(chatroom);
-            await _context.SaveChangesAsync();
+            await _unitOfWork.ChatroomRepository.DeleteAsync(id);
+            await _unitOfWork.CommitAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ChatroomExists(int id)
+        private async Task<bool> ChatroomExists(int id)
         {
-            return _context.Chatrooms.Any(e => e.Id == id);
+            var chatroom = await _unitOfWork.ChatroomRepository.GetByIdAsync(id);
+            return chatroom != null;
         }
     }
 }

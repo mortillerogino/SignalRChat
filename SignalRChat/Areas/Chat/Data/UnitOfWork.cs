@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SignalRChat.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,9 @@ namespace SignalRChat.Areas.Chat.Data
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly DbContext _dbContext;
+        private readonly ChatContext _dbContext;
 
-        public UnitOfWork(DbContext dbContext)
+        public UnitOfWork(ChatContext dbContext)
         {
             _dbContext = dbContext;
         }
