@@ -22,7 +22,8 @@ namespace SignalRChat.Areas.Chat.Data
         {
             get
             {
-                return CreateIfNull(_chatroomRepository, typeof(ChatroomRepository));
+                _chatroomRepository = CreateIfNull(_chatroomRepository, typeof(ChatroomRepository));
+                return _chatroomRepository;
             }
         }
 
@@ -31,7 +32,8 @@ namespace SignalRChat.Areas.Chat.Data
         {
             get
             {
-                return CreateIfNull(_chatMessageRepository, typeof(ChatMessageRepository));
+                _chatMessageRepository = CreateIfNull(_chatMessageRepository, typeof(ChatMessageRepository));
+                return _chatMessageRepository;
             }
         }
 
@@ -40,7 +42,8 @@ namespace SignalRChat.Areas.Chat.Data
         {
             get
             {
-                return CreateIfNull(_chatUserRepository, typeof(ChatUserRepository));
+                _chatUserRepository = CreateIfNull(_chatUserRepository, typeof(ChatUserRepository));
+                return _chatUserRepository;
             }
         }
 
@@ -49,7 +52,8 @@ namespace SignalRChat.Areas.Chat.Data
         {
             get
             {
-                return CreateIfNull(_chatUserClaimRepository, typeof(ChatUserClaimRepository));
+                _chatUserClaimRepository = CreateIfNull(_chatUserClaimRepository, typeof(ChatUserClaimRepository));
+                return _chatUserClaimRepository;
             }
         }
 
@@ -58,7 +62,8 @@ namespace SignalRChat.Areas.Chat.Data
         {
             get
             {
-                return CreateIfNull(_chatUserRoomRepository, typeof(ChatUserRoomRepository));
+                _chatUserRoomRepository = CreateIfNull(_chatUserRoomRepository, typeof(ChatUserRoomRepository));
+                return _chatUserRoomRepository;
             }
         }
 
