@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SignalRChat.Areas.Chat.Data;
 using SignalRChat.Areas.Chat.Models;
+using SignalRChat.Areas.Chat.Services;
 using SignalRChat.Areas.Identity.Models;
 using SignalRChat.Models;
 
@@ -42,17 +43,9 @@ namespace SignalRChat.Areas.Chat.Controllers
                 return NotFound();
             }
 
-            var messages = await _unitOfWork.ChatMessageRepository.GetAsync(null, null, a => a.ChatUser);
-            var chatroom = await _unitOfWork.ChatroomRepository.GetAsync(a => a.Id == id, null);
-            if (chatroom == null)
-            {
-                return NotFound();
-            }
-
-            var currentUser = await _userManager.GetUserAsync(User);
-
-            var dto = new ChatroomDto(chatroom.FirstOrDefault());
-            dto.SetUser(currentUser);
+            var dto = await ChatroomService.GetChatroomDetailsAsync(_unitOfWork, _userManager, 
+                chatroomId: id.Value, 
+                claimsPrincipalUser: User);
 
             return View(dto);
         }

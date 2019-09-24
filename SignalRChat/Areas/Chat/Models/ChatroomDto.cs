@@ -10,7 +10,25 @@ namespace SignalRChat.Areas.Chat.Models
     {
         public int Id { get; }
         public string Name { get; }
-        public ICollection<ChatMessage> ChatMessages { get; }
+
+        private ICollection<ChatMessage> _chatMessages;
+        public ICollection<ChatMessage> ChatMessages
+        {
+            get
+            {
+                if (_chatMessages == null)
+                {
+                    _chatMessages = new List<ChatMessage>();
+                }
+
+                return _chatMessages;
+            }
+            set
+            {
+                _chatMessages = value;
+            }
+        }
+
         public ChatUser User { get; private set; }
 
         public ChatroomDto(Chatroom chatroom)
