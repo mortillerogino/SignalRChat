@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SignalRChat.Areas.Chat.Data;
 using SignalRChat.Areas.Chat.Models;
+using SignalRChat.Areas.Chat.Services;
 using SignalRChat.Areas.Identity.Data;
 using SignalRChat.Areas.Identity.Models;
 using SignalRChat.Models;
@@ -39,6 +40,7 @@ namespace SignalRChat
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserStore<ChatUser>, ChatUserStore>();
+            services.AddScoped(typeof(ChatroomService));
 
             services.AddDefaultIdentity<ChatUser>();
 

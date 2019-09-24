@@ -10,11 +10,20 @@ using System.Threading.Tasks;
 
 namespace SignalRChat.Areas.Chat.Services
 {
-    public static class ChatroomService
+    public class ChatroomService
     {
-        public static async Task<ChatroomDto> GetChatroomDetailsAsync(IUnitOfWork unitOfWork, UserManager<ChatUser> userManager, int chatroomId, ClaimsPrincipal claimsPrincipalUser)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<ChatUser> _userManager;
+
+        public ChatroomService(IUnitOfWork unitOfWork, UserManager<ChatUser> userManager)
         {
-            var chatroomsThatMatchId = await unitOfWork.ChatroomRepository.GetAsync(a => a.Id == chatroomId, null);
+            _unitOfWork = unitOfWork;
+            _userManager = userManager;
+        }
+
+        public async Task<ChatroomDto> GetChatroomDetailsAsync(int chatroomId, ClaimsPrincipal claimsPrincipalUser)
+        {
+            var chatroomsThatMatchId = await _unitOfWork.ChatroomRepository.GetAsync(a => a.Id == chatroomId, null);
             var currentChatroom = chatroomsThatMatchId.FirstOrDefault();
 
             if (currentChatroom == null)
@@ -22,8 +31,8 @@ namespace SignalRChat.Areas.Chat.Services
                 return null;
             }
 
-            var messages = await unitOfWork.ChatMessageRepository.GetAsync(a => a.ChatroomId == chatroomId, null, a => a.ChatUser);
-            var currentUser = await userManager.GetUserAsync(claimsPrincipalUser);
+            var messages = await _unitOfWork.ChatMessageRepository.GetAsync(a => a.ChatroomId == chatroomId, null, a => a.ChatUser);
+            var currentUser = await _userManager.GetUserAsync(claimsPrincipalUser);
 
             var dto = new ChatroomDto(currentChatroom);
             dto.SetUser(currentUser);

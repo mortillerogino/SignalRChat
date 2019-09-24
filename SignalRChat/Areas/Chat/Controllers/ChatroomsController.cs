@@ -22,11 +22,13 @@ namespace SignalRChat.Areas.Chat.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ChatUser> _userManager;
+        private readonly ChatroomService _service;
 
-        public ChatroomsController(IUnitOfWork unitOfWork, UserManager<ChatUser> userManager)
+        public ChatroomsController(IUnitOfWork unitOfWork, UserManager<ChatUser> userManager, ChatroomService service)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+            _service = service;
         }
 
         // GET: Chat/Chatrooms
@@ -43,9 +45,7 @@ namespace SignalRChat.Areas.Chat.Controllers
                 return NotFound();
             }
 
-            var dto = await ChatroomService.GetChatroomDetailsAsync(_unitOfWork, _userManager, 
-                chatroomId: id.Value, 
-                claimsPrincipalUser: User);
+            var dto = await _service.GetChatroomDetailsAsync(chatroomId: id.Value, claimsPrincipalUser: User);
 
             return View(dto);
         }
