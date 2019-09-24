@@ -8,7 +8,12 @@ Uses SQL Server to record all messages as well as user chatrooms.
 Technologies used:
 - C#
 - Asp Net Core
+- Asp Net Core Identities
+- Signal R
+- SQL Server
+- Entity Framework
 - Razor Web Pages
-- Javascript/JQuery
+- Javascript/Jquery
+- Toastr Service
 - HTML/CSS
 - Bootstrap
