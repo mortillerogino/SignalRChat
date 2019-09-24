@@ -31,7 +31,7 @@ namespace SignalRChat.Areas.Chat.Services
                 return null;
             }
 
-            var messages = await _unitOfWork.ChatMessageRepository.GetAsync(a => a.ChatroomId == chatroomId, null, a => a.ChatUser);
+            var messages = await _unitOfWork.ChatMessageRepository.GetAsync(a => a.ChatroomId == chatroomId, a => a.OrderByDescending(o => o.TimeStamp), a => a.ChatUser);
             var currentUser = await _userManager.GetUserAsync(claimsPrincipalUser);
             var members = _unitOfWork.ChatUserRoomRepository.Query(ur => ur.ChatroomId == chatroomId).Select(a => a.ChatUser).ToList();
 

@@ -56,10 +56,14 @@ body {
 }
 
 .messages-container {
-    height: 500px;
+    height: 400px;
 }
 
 .messages-field {
     height: 100px;
 }
 
+.timestamp {
+    color: #808080;
+    font-size: smaller;
+}

@@ -8,11 +8,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
-
 <div>
-    <h4>Chatroom</h4>
-    <hr />
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
@@ -37,9 +33,10 @@
 </div>
 <div class="container">
     <div class="row mt-5 mb-5">
-        <div class="input-group mb-3">
+        <div class="input-group mb-3 col-lg-12">
             <input type="hidden" id="chatroomId" value="@Model.Id" />
             <input type="hidden" id="userId" value="@Model.User.Id" />
+            <input type="hidden" id="userName" value="@Model.User.UserName" />
             <input type="text" class="form-control" placeholder="Chat here" id="newMessageBox">
             <div class="input-group-append">
                 <button class="btn btn-primary" type="button" id="sendButton">Send</button>
@@ -47,12 +44,32 @@
         </div>
     </div>
     <div class="row messages-container overflow-auto">
-        <ul id="messagesContainer" class="list-group">
-            @foreach (var item in Model.ChatMessages)
-            {
-                <li class="list-group-item">@item.TimeStamp @item.ChatUser.UserName: @item.Message </li>
-            }
-        </ul>
+        <div class="col-lg-12">
+            <ul id="messagesContainer" class="list-group">
+                @foreach (var item in Model.ChatMessages)
+                {
+                    @if (item.ChatUser.UserName == Model.User.UserName)
+                    {
+                        <li class="list-group-item">
+                            <div class="container">
+                                <p><span class="font-weight-bold">@item.ChatUser.UserName:</span> @item.Message</p>
+                                <span class="float-left timestamp">@item.TimeStamp</span>
+                            </div>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="list-group-item list-group-item-primary">
+                            <div class="container">
+                                <p><span class="font-weight-bold">@item.ChatUser.UserName:</span> @item.Message</p>
+                                <span class="float-left timestamp">@item.TimeStamp</span>
+                            </div>
+                        </li>
+                    }
+
+                }
+            </ul>
+        </div>
     </div>
 </div>
 <script src="~/lib/jquery/dist/jquery.js"></script>
