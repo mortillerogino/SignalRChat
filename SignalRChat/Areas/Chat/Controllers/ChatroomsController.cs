@@ -34,11 +34,14 @@ namespace SignalRChat.Areas.Chat.Controllers
         // GET: Chat/Chatrooms
         public async Task<IActionResult> Index()
         {
-            //var user = await _userManager.GetUserAsync(User);
-            //var userRooms = await _unitOfWork.
+            var user = await _userManager.GetUserAsync(User);
+            var userRooms = await _unitOfWork.ChatUserRoomRepository.Query(ur => ur.ChatUserId == user.Id)
+                .Select(a => a.ChatroomId)
+                .ToListAsync();
 
+            var chatrooms = await _unitOfWork.ChatroomRepository.GetAsync(r => userRooms.Contains(r.Id));
 
-            return View(await _unitOfWork.ChatroomRepository.GetAsync());
+            return View(chatrooms);
         }
 
         // GET: Chat/Chatrooms/Details/5
