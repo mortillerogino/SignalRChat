@@ -150,6 +150,47 @@ namespace SignalRChat.Areas.Chat.Controllers
             return View(chatroom);
         }
 
+        public async Task<IActionResult> AddMembers(int? id)
+        {
+            var nonMembers = new List<ChatUser>();
+            var members = await _unitOfWork.ChatUserRepository.GetAsync();
+            foreach (ChatUser user in members)
+            {
+                var relationshipWithRoom = await _unitOfWork.ChatUserRoomRepository.GetAsync(ur => ur.ChatUserId == user.Id && ur.ChatroomId == id.Value);
+                if (relationshipWithRoom.Count > 0)
+                {
+                    continue;
+                }
+                nonMembers.Add(user);
+            }
+
+            var chatroom = await _unitOfWork.ChatroomRepository.GetByIdAsync(id);
+
+            var dto = new AddChatUserDto
+            {
+                NonMembers = nonMembers,
+                Chatroom = chatroom
+            };
+            
+            return View(dto);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddMembers([Bind("MemberToAddId, ChatroomId")] AddChatUserDto dto)
+        {
+            var newRelationship = new ChatUserRoom
+            {
+                ChatUserId = dto.MemberToAddId,
+                ChatroomId = dto.ChatroomId
+            };
+
+            await _unitOfWork.ChatUserRoomRepository.InsertAsync(newRelationship);
+            await _unitOfWork.CommitAsync();
+
+            return RedirectToAction("Details", new { id = dto.ChatroomId });
+        }
+
         // POST: Chat/Chatrooms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

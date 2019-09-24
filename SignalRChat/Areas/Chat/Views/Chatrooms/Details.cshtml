@@ -27,6 +27,7 @@
         </dt>
         <dd class="col-sm-10">
             @Model.GetUsersString()
+            <a asp-action="AddMembers" asp-route-id="@Model.Id">Add Members</a>
         </dd>
     </dl>
 </div>
