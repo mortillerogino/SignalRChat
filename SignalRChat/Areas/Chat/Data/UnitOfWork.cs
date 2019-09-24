@@ -22,12 +22,7 @@ namespace SignalRChat.Areas.Chat.Data
         {
             get
             {
-                if (_chatroomRepository == null)
-                {
-                    _chatroomRepository = new ChatroomRepository(_dbContext);
-                }
-
-                return _chatroomRepository;
+                return CreateIfNull(_chatroomRepository, typeof(ChatroomRepository));
             }
         }
 
@@ -36,12 +31,7 @@ namespace SignalRChat.Areas.Chat.Data
         {
             get
             {
-                if (_chatMessageRepository == null)
-                {
-                    _chatMessageRepository = new ChatMessageRepository(_dbContext);
-                }
-
-                return _chatMessageRepository;
+                return CreateIfNull(_chatMessageRepository, typeof(ChatMessageRepository));
             }
         }
 
@@ -50,12 +40,7 @@ namespace SignalRChat.Areas.Chat.Data
         {
             get
             {
-                if (_chatUserRepository == null)
-                {
-                    _chatUserRepository = new ChatUserRepository(_dbContext);
-                }
-
-                return _chatUserRepository;
+                return CreateIfNull(_chatUserRepository, typeof(ChatUserRepository));
             }
         }
 
@@ -64,12 +49,16 @@ namespace SignalRChat.Areas.Chat.Data
         {
             get
             {
-                if (_chatUserClaimRepository == null)
-                {
-                    _chatUserClaimRepository = new ChatUserClaimRepository(_dbContext);
-                }
+                return CreateIfNull(_chatUserClaimRepository, typeof(ChatUserClaimRepository));
+            }
+        }
 
-                return _chatUserClaimRepository;
+        private IChatUserRoomRepository _chatUserRoomRepository;
+        public IChatUserRoomRepository ChatUserRoomRepository
+        {
+            get
+            {
+                return CreateIfNull(_chatUserRoomRepository, typeof(ChatUserRoomRepository));
             }
         }
 
@@ -100,6 +89,16 @@ namespace SignalRChat.Areas.Chat.Data
         public void Dispose()
         {
             Dispose(true);
+        }
+
+        private T CreateIfNull<T>(T privateProperty, Type repositoryClass)
+        {
+            if (privateProperty == null)
+            {
+                privateProperty = (T)Activator.CreateInstance(repositoryClass, _dbContext);
+            }
+
+            return privateProperty;
         }
     }
 }

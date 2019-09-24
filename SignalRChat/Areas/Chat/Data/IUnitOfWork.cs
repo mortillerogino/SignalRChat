@@ -13,6 +13,7 @@ namespace SignalRChat.Areas.Chat.Data
         IChatMessageRepository ChatMessageRepository { get; }
         IChatUserRepository ChatUserRepository { get; }
         IChatUserClaimRepository ChatUserClaimRepository { get; }
+        IChatUserRoomRepository ChatUserRoomRepository { get; }
 
         void Commit();
 
