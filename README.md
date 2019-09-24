@@ -14,6 +14,5 @@ Technologies used:
 - Entity Framework
 - Razor Web Pages
 - Javascript/Jquery
-- Toastr Service
 - HTML/CSS
 - Bootstrap
