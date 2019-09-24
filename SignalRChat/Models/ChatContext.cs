@@ -26,6 +26,7 @@ namespace SignalRChat.Models
 
         public DbSet<Chatroom> Chatrooms { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<ChatUserRoom> ChatUserRooms { get; set; }
 
         public DbSet<ChatUser> ChatUsers { get; set; }
         public DbSet<ChatUserClaim> ChatUserClaims { get; set; }
@@ -38,6 +39,7 @@ namespace SignalRChat.Models
             modelBuilder.Entity<ChatMessage>().ToTable("ChatMessage");
             modelBuilder.Entity<ChatUser>().ToTable("ChatUser");
             modelBuilder.Entity<ChatUserClaim>().ToTable("ChatUserClaim");
+            modelBuilder.Entity<ChatUserRoom>().ToTable("ChatUserRoom");
         }
     }
 }
