@@ -158,27 +158,8 @@ namespace SignalRChat.Areas.Chat.Controllers
             await _unitOfWork.ChatroomRepository.DeleteAsync(id);
             await _unitOfWork.CommitAsync();
             return RedirectToAction(nameof(Index));
-        }
+       }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> AddMessage(int chatroomId, string message)
-        //{
-        //    var newMessage = new ChatMessage
-        //    {
-        //        Message = message, 
-        //        ChatroomId = chatroomId
-        //    };
-
-        //    var chatroom = await _unitOfWork.ChatroomRepository.GetByIdAsync(chatroomId);
-        //    chatroom.ChatMessages.Add(newMessage);
-
-        //    await _unitOfWork.ChatMessageRepository.InsertAsync(newMessage);
-        //    _unitOfWork.ChatroomRepository.Update(chatroom);
-        //    await _unitOfWork.CommitAsync();
-
-        //    return View(chatroom);
-        //}
 
         private async Task<bool> ChatroomExists(int id)
         {
