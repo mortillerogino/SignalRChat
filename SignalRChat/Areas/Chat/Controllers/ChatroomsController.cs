@@ -72,18 +72,7 @@ namespace SignalRChat.Areas.Chat.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _unitOfWork.ChatroomRepository.InsertAsync(chatroom);
-                await _unitOfWork.CommitAsync();
-
-                var user = _userManager.GetUserAsync(User);
-                var userRoomRelationship = new ChatUserRoom
-                {
-                    ChatUserId = user.Id,
-                    ChatroomId = chatroom.Id
-                };
-
-                await _unitOfWork.ChatUserRoomRepository.InsertAsync(userRoomRelationship);
-                await _unitOfWork.CommitAsync();
+                await _service.CreateChatroom(chatroom, User);
 
                 return RedirectToAction(nameof(Index));
             }
