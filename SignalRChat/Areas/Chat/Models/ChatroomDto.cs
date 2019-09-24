@@ -1,7 +1,9 @@
 ﻿using SignalRChat.Areas.Identity.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SignalRChat.Areas.Chat.Models
@@ -23,9 +25,21 @@ namespace SignalRChat.Areas.Chat.Models
 
                 return _chatMessages;
             }
-            set
+        }
+
+        private ICollection<ChatUser> _chatUsers;
+
+        [DisplayName("Members")]
+        public ICollection<ChatUser> ChatUsers
+        {
+            get
             {
-                _chatMessages = value;
+                if (_chatUsers == null)
+                {
+                    _chatUsers = new List<ChatUser>();
+                }
+
+                return _chatUsers;
             }
         }
 
@@ -33,14 +47,29 @@ namespace SignalRChat.Areas.Chat.Models
 
         public ChatroomDto(Chatroom chatroom)
         {
-            this.Id = chatroom.Id;
-            this.Name = chatroom.Name;
-            this.ChatMessages = chatroom.ChatMessages;
+            Id = chatroom.Id;
+            Name = chatroom.Name;
+            _chatMessages = chatroom.ChatMessages;
         }
 
         public void SetUser(ChatUser user)
         {
-            this.User = user;
+            User = user;
+        }
+
+        public void SetChatMembers(IList<ChatUser> chatUsers)
+        {
+            _chatUsers = chatUsers;
+        }
+
+        public string GetUsersString()
+        {
+            if (ChatUsers.Count == 0)
+            {
+                return "None";
+            }
+            var names = ChatUsers.Select(u => u.UserName).ToList();
+            return string.Join(", ", names);
         }
     }
 }
