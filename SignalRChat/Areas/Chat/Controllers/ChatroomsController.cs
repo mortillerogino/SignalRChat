@@ -42,7 +42,8 @@ namespace SignalRChat.Areas.Chat.Controllers
                 return NotFound();
             }
 
-            var chatroom = await _unitOfWork.ChatroomRepository.GetAsync(a => a.Id == id, null, a => a.ChatMessages);
+            var messages = await _unitOfWork.ChatMessageRepository.GetAsync(null, null, a => a.ChatUser);
+            var chatroom = await _unitOfWork.ChatroomRepository.GetAsync(a => a.Id == id, null);
             if (chatroom == null)
             {
                 return NotFound();
