@@ -34,6 +34,8 @@ namespace SignalRChat.Areas.Chat.Controllers
         // GET: Chat/Chatrooms
         public async Task<IActionResult> Index()
         {
+
+
             return View(await _unitOfWork.ChatroomRepository.GetAsync());
         }
 
