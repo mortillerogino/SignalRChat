@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table table-hover">
     <thead>
         <tr>
             <th>
@@ -21,13 +21,15 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+        <tr class="clickable" onclick="location.href = '@(Url.Action("Details", "Chatrooms", new { id = item.Id }))'">
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
+            @*<td>
+                <button class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">CHATROOM</button>
+            </td>*@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Change Room Name</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Chatroom</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
