@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using SignalRChat.Areas.Chat.Data;
 using SignalRChat.Areas.Chat.Models;
 using SignalRChat.Areas.Chat.Services;
@@ -20,13 +19,11 @@ namespace SignalRChat.Areas.Chat.Controllers
     [Authorize]
     public class ChatroomsController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ChatUser> _userManager;
         private readonly ChatroomService _service;
 
-        public ChatroomsController(IUnitOfWork unitOfWork, UserManager<ChatUser> userManager, ChatroomService service)
+        public ChatroomsController(UserManager<ChatUser> userManager, ChatroomService service)
         {
-            _unitOfWork = unitOfWork;
             _userManager = userManager;
             _service = service;
         }
@@ -34,15 +31,12 @@ namespace SignalRChat.Areas.Chat.Controllers
         // GET: Chat/Chatrooms
         public async Task<IActionResult> Index()
         {
-            var user = await _userManager.GetUserAsync(User);
-            var userRooms = await _unitOfWork.ChatUserRoomRepository.Query(ur => ur.ChatUserId == user.Id)
-                .Select(a => a.ChatroomId)
-                .ToListAsync();
-
-            var chatrooms = await _unitOfWork.ChatroomRepository.GetAsync(r => userRooms.Contains(r.Id));
+            List<Chatroom> chatrooms = await _service.GetUserChatroomsAsync(User);
 
             return View(chatrooms);
         }
+
+        
 
         // GET: Chat/Chatrooms/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -88,7 +82,7 @@ namespace SignalRChat.Areas.Chat.Controllers
                 return NotFound();
             }
 
-            var chatroom = await _unitOfWork.ChatroomRepository.GetByIdAsync(id);
+            var chatroom = await _service.GetChatroomAsync(id.Value);
             if (chatroom == null)
             {
                 return NotFound();
@@ -111,27 +105,14 @@ namespace SignalRChat.Areas.Chat.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _unitOfWork.ChatroomRepository.Update(chatroom);
-                    await _unitOfWork.CommitAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    var chatroomExists = await ChatroomExists(id);
-                    if (!chatroomExists)
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _service.UpdateChatroomAsync(chatroom);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(chatroom);
         }
+
+        
 
         // GET: Chat/Chatrooms/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -141,7 +122,7 @@ namespace SignalRChat.Areas.Chat.Controllers
                 return NotFound();
             }
 
-            var chatroom = await _unitOfWork.ChatroomRepository.GetByIdAsync(id);
+            var chatroom = await _service.GetChatroomAsync(id.Value);
             if (chatroom == null)
             {
                 return NotFound();
@@ -152,25 +133,7 @@ namespace SignalRChat.Areas.Chat.Controllers
 
         public async Task<IActionResult> AddMembers(int? id)
         {
-            var nonMembers = new List<ChatUser>();
-            var members = await _unitOfWork.ChatUserRepository.GetAsync();
-            foreach (ChatUser user in members)
-            {
-                var relationshipWithRoom = await _unitOfWork.ChatUserRoomRepository.GetAsync(ur => ur.ChatUserId == user.Id && ur.ChatroomId == id.Value);
-                if (relationshipWithRoom.Count > 0)
-                {
-                    continue;
-                }
-                nonMembers.Add(user);
-            }
-
-            var chatroom = await _unitOfWork.ChatroomRepository.GetByIdAsync(id);
-
-            var dto = new AddChatUserDto
-            {
-                NonMembers = nonMembers,
-                Chatroom = chatroom
-            };
+            var dto = await _service.GetAddMembersDto(chatroomId: id.Value);
             
             return View(dto);
         }
@@ -179,14 +142,7 @@ namespace SignalRChat.Areas.Chat.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddMembers([Bind("MemberToAddId, ChatroomId")] AddChatUserDto dto)
         {
-            var newRelationship = new ChatUserRoom
-            {
-                ChatUserId = dto.MemberToAddId,
-                ChatroomId = dto.ChatroomId
-            };
-
-            await _unitOfWork.ChatUserRoomRepository.InsertAsync(newRelationship);
-            await _unitOfWork.CommitAsync();
+            await _service.CreateUserRoomRelationshipAsync(dto.ChatroomId, dto.MemberToAddId);
 
             return RedirectToAction("Details", new { id = dto.ChatroomId });
         }
@@ -196,34 +152,16 @@ namespace SignalRChat.Areas.Chat.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _unitOfWork.ChatroomRepository.DeleteAsync(id);
-            await _unitOfWork.CommitAsync();
+            await _service.DeleteChatroomAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Leave(int id)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var relationship = await _unitOfWork.ChatUserRoomRepository.GetFirstOrDefaultAsync(ur => ur.ChatroomId == id && ur.ChatUserId == user.Id);
-            await _unitOfWork.ChatUserRoomRepository.DeleteAsync(relationship.Id);
-            await _unitOfWork.CommitAsync();
-
-            var membersRemaining = await _unitOfWork.ChatUserRoomRepository.GetAsync(ur => ur.ChatroomId == id);
-            if (membersRemaining.Count == 0)
-            {
-                await _unitOfWork.ChatroomRepository.DeleteAsync(id);
-            }
-
-            await _unitOfWork.CommitAsync();
-
+            await _service.LeaveChatroomAsync(chatroomId: id, User);
             return RedirectToAction(nameof(Index));
         }
 
 
-        private async Task<bool> ChatroomExists(int id)
-        {
-            var chatroom = await _unitOfWork.ChatroomRepository.GetByIdAsync(id);
-            return chatroom != null;
-        }
     }
 }
