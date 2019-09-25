@@ -15,6 +15,7 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
+            
         </dd>
     </dl>
     <dl class="row">
@@ -28,7 +29,7 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    @Html.ActionLink("Leave Chatroom", "Leave", new { id = Model.Id }, new { onclick = "return confirm('Are you sure you want to leave this chatroom?');" }) |
     <a asp-action="Index">Back to List</a>
 </div>
 <div class="container">

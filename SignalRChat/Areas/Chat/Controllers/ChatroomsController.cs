@@ -199,7 +199,25 @@ namespace SignalRChat.Areas.Chat.Controllers
             await _unitOfWork.ChatroomRepository.DeleteAsync(id);
             await _unitOfWork.CommitAsync();
             return RedirectToAction(nameof(Index));
-       }
+        }
+
+        public async Task<IActionResult> Leave(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var relationship = await _unitOfWork.ChatUserRoomRepository.GetFirstOrDefaultAsync(ur => ur.ChatroomId == id && ur.ChatUserId == user.Id);
+            await _unitOfWork.ChatUserRoomRepository.DeleteAsync(relationship.Id);
+            await _unitOfWork.CommitAsync();
+
+            var membersRemaining = await _unitOfWork.ChatUserRoomRepository.GetAsync(ur => ur.ChatroomId == id);
+            if (membersRemaining.Count == 0)
+            {
+                await _unitOfWork.ChatroomRepository.DeleteAsync(id);
+            }
+
+            await _unitOfWork.CommitAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
 
 
         private async Task<bool> ChatroomExists(int id)
