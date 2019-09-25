@@ -11,21 +11,29 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AddMembers">
-            <div class="form-group">
-                <select class="custom-select custom-select-lg mb-3" asp-for="MemberToAddId">
-                    <option selected>Select user to add</option>
-                    @foreach (ChatUser user in Model.NonMembers)
-                    {
-                        <option value="@user.Id">@user.UserName</option>
-                    }
-                </select>
-            </div>
-            <input type="hidden" asp-for="ChatroomId" value="@Model.Chatroom.Id" />
-            <div class="form-group">
-                <input type="submit" value="Add User" class="btn btn-primary" />
-            </div>
-        </form>
+        @if (Model.NonMembers.Count > 0)
+	    {
+            <form asp-action="AddMembers">
+                <div class="form-group">
+                    <select class="custom-select custom-select-lg mb-3" asp-for="MemberToAddId">
+                        <option selected>Select user to add</option>
+                        @foreach (ChatUser user in Model.NonMembers)
+                        {
+                            <option value="@user.Id">@user.UserName</option>
+                        }
+                    </select>
+                </div>
+                <input type="hidden" asp-for="ChatroomId" value="@Model.Chatroom.Id" />
+                <div class="form-group">
+                    <input type="submit" value="Add User" class="btn btn-primary" />
+                </div>
+            </form>
+        }
+        else
+        {
+            <p>No More members Left to add.</p>
+        }
+
     </div>
 </div>
 
